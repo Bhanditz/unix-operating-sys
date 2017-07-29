@@ -123,3 +123,8 @@ strings at a time. We are just using the character device interface in Linux as 
 
 The reason "full" and "empty" are in brackets in the last two steps above is to let you choose whether to notify upon every single read/write or only when really necessary. Whatever option you choose, make sure no notifications are "lost" by blocked producers/consumers.
 
+# Tracking Page Faults for a Process
+
+Use kernel-level probing mechanisms to intercept and track kernel events.
+
+Kprobes enables you to dynamically break into any kernel routine and collect debugging and performance information non-disruptively. You can trap at almost any kernel code address(*), specifying a handler routine to be invoked when the breakpoint is hit.
