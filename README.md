@@ -1,4 +1,4 @@
-# 1. Mini Shell
+# Mini Shell
 
 write a simple shell program called minish. You start the shell by typing minish at the prompt. This will give a prompt of your shell as follows:
 minish>
@@ -92,4 +92,34 @@ IMPORTANT; Save copies of the "bad" code that you tested, by giving them differe
 BEWARE that some of the things you do may have no immediate visible effect, but may have a delayed effect that is disastrous. This is generally the case if you write garbage into random locations of kernel memory. The location you corrupt may not be referenced for a while. It will be referenced later, and then the effect will occur. Therefore, you cannot assume that the thing you did most recently is necessarily the cause of a crash.
 
 Do not go overboard on this part of the assignment. The objective is to expose you to the various ways a kernel failure can manifest itself, in preparation for testing your own code. The objective is not to do the most damage possible to your system. In particular, it would better if you you do not trash your hard drive, since reinstalling the entire system can take a frustratingly long time.
+
+# Character-device
+
+Implement a kernel-level pipe for exchanging strings among user-level processes. You will learn about concurrency, synchronization, and various kernel primitives.
+
+This is a classical producer-consumer problem. Implement a miscellaneous character device in the Linux Kernel. This device must maintain a FIFO queue (i.e. a pipe) of maximum N strings (configured as a module parameter).
+
+1. In user space, there are several concurrent processes that are consumers and producers of strings.
+
+2. Producers produce strings and write them to a character device (say /dev/mypipe).
+
+3. Consumers read the strings from the character device and print it on the screen.
+
+4. When the pipe is full, i.e. when there are N strings stored in character device, then any producer
+trying to write will block.
+
+5. When the pipe is empty, i.e. when there are 0 strings stored in character device, then any
+consumer trying to read will block.
+
+6. When a consumer reads from a (full) pipe, it wakes up all blocked producers. In this case, no
+blocked consumer should be woken up.
+
+7. When a producer writes to a (empty) pipe, it wakes up all blocked consumers. In this case, no
+blocked producer should be woken up.
+
+Notes
+You might have noticed that this is not really a "character device" by strict definition, because it doesn't provide a byte-stream abstractions. Instead user processes are writing and reading whole
+strings at a time. We are just using the character device interface in Linux as a convenient mechanism to implement a pipe of strings.
+
+The reason "full" and "empty" are in brackets in the last two steps above is to let you choose whether to notify upon every single read/write or only when really necessary. Whatever option you choose, make sure no notifications are "lost" by blocked producers/consumers.
 
